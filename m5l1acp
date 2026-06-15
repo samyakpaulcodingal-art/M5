@@ -1,0 +1,101 @@
+# ==========================================================
+# ASSIGNMENT: MY SECRET CODE BIT SCANNER
+# ==========================================================
+
+# ----------------------------------------------------------
+# BITWISE OPERATORS FUNCTIONS
+# ----------------------------------------------------------
+"""
+[PSEUDOCODE FOR BIT SCANNER]
+START
+    INPUT secret_code, access_key
+    
+    # Scan/Compare using AND, OR, XOR
+    SET common_bits = secret_code AND access_key
+    SET combined_bits = secret_code OR access_key
+    SET mismatched_bits = secret_code XOR access_key
+    
+    # Flip using NOT
+    SET flipped_code = NOT secret_code
+    
+    # Shift operations
+    SET left_shifted = secret_code LEFT SHIFT 2
+    SET right_shifted = secret_code RIGHT SHIFT 2
+    
+    OUTPUT all results in Binary and Decimal format
+END
+"""
+
+def bit_scanner_operations(secret_code, access_key):
+    # Time Complexity for bitwise ops: O(1) - Hardware level operations
+    # Space Complexity: O(1)
+    
+    print(f"Initial Secret Code : {secret_code} (Binary: {bin(secret_code)[2:].zfill(8)})")
+    print(f"Initial Access Key  : {access_key} (Binary: {bin(access_key)[2:].zfill(8)})\n")
+    print("-" * 55)
+    
+    # 1. Bitwise AND (&) - Scan for matching common bits
+    scan_and = secret_code & access_key
+    print(f"[AND Operation]  Common Bits     : {scan_and} (Binary: {bin(scan_and)[2:].zfill(8)})")
+    
+    # 2. Bitwise OR (|) - Combine bits together
+    scan_or = secret_code | access_key
+    print(f"[OR Operation]   Combined Bits   : {scan_or} (Binary: {bin(scan_or)[2:].zfill(8)})")
+    
+    # 3. Bitwise XOR (^) - Find mismatched/different bits
+    scan_xor = secret_code ^ access_key
+    print(f"[XOR Operation]  Mismatched Bits : {scan_xor} (Binary: {bin(scan_xor)[2:].zfill(8)})")
+    
+    # 4. Bitwise NOT (~) - Flip all bits (using 8-bit masking)
+    scan_not = ~secret_code & 0xFF
+    print(f"[NOT Operation]  Flipped Code    : {scan_not} (Binary: {bin(scan_not)[2:].zfill(8)})")
+    
+    # 5. Left Shift (<<) - Shift bits left (multiplies by 2 for each shift)
+    shift_left = secret_code << 2
+    print(f"[Left Shift <<2] Multiplied Code : {shift_left} (Binary: {bin(shift_left)[2:]})")
+    
+    # 6. Right Shift (>>) - Shift bits right (divides by 2 for each shift)
+    shift_right = secret_code >> 2
+    print(f"[Right Shift >>2] Divided Code   : {shift_right} (Binary: {bin(shift_right)[2:].zfill(8)})")
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- My Secret Code Bit Scanner Started ---\n")
+    
+    # Sample numbers representing secret values
+    secret = 25   # Binary: 00011001
+    key = 12      # Binary: 00001100
+    
+    bit_scanner_operations(secret, key)
+    print("\n---------------------------------------------------------")
+
+
+# ==========================================================
+# BIT MANIPULATION THEORY & EXPERT REPORT
+# ==========================================================
+"""
+------------------------------------------------------------
+BITWISE OPERATORS EXPLANATION:
+------------------------------------------------------------
+1. AND (&): Output is 1 only if both bits are 1. Used to check 
+   if specific secret keys match.
+2. OR (|): Output is 1 if at least one bit is 1. Used to combine 
+   different codes together.
+3. XOR (^): Output is 1 if bits are different. It evaluates to 0 
+   if they are identical. Extremely helpful for detecting security leaks.
+4. NOT (~): Inverts all bits (turns 0s into 1s and 1s into 0s). 
+   Essential for basic data encryption and masking.
+5. Shift Operators (<< , >>): Moves bits to the left or right. Left shift 
+   multiplies the number by powers of 2, while right shift divides it.
+
+------------------------------------------------------------
+COMPLEXITY & EFFICIENCY ANALYSIS
+------------------------------------------------------------
+- Time Complexity: O(1) - Constant Time. Bitwise operations are processed 
+  directly at the CPU register level in a single clock cycle, making them 
+  significantly faster than arithmetic or loop structures.
+- Space Complexity: O(1) - No extra data structures are required.
+"""
