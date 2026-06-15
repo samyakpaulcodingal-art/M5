@@ -1,0 +1,149 @@
+# ==========================================================
+# ASSIGNMENT: BINARY SUBSET BUILDER
+# ==========================================================
+
+# ----------------------------------------------------------
+# METHOD 1: GENERATE POWER SET USING BITMASKS (Two Loops)
+# ----------------------------------------------------------
+"""
+[METHOD 1: PSEUDOCODE]
+START
+    INPUT main_set (list)
+    SET set_size = length of main_set
+    SET total_subsets = 2 SHIFT LEFT set_size
+    SET power_set = empty list
+    
+    FOR i from 0 to total_subsets - 1:
+        SET current_subset = empty list
+        FOR j from 0 to set_size - 1:
+            # Check if the j-th bit of integer 'i' is set
+            IF (i AND (1 SHIFT LEFT j)) NOT EQUAL 0 THEN
+                APPEND main_set[j] to current_subset
+            END IF
+        END FOR
+        APPEND current_subset to power_set
+    END FOR
+    OUTPUT power_set
+END
+"""
+
+def generate_power_set(main_set):
+    # Time Complexity: O(n * 2^n) - Where n is the number of elements
+    # Space Complexity: O(n * 2^n) - To hold all generated subsets
+    n = len(main_set)
+    total_subsets = 1 << n  # Equivalent to 2^n combinations
+    power_set = []
+    
+    # Outer loop runs from binary 000... to 111...
+    for i in range(total_subsets):
+        current_subset = []
+        # Inner loop acts as a bit probe checking each index
+        for j in range(n):
+            if (i & (1 << j)) != 0:
+                current_subset.append(main_set[j])
+        power_set.append(current_subset)
+        
+    return power_set
+
+
+# ----------------------------------------------------------
+# METHOD 2: BIT PROBE & BIT DIFFERENCE (Hamming Distance)
+# ----------------------------------------------------------
+"""
+[METHOD 2: PSEUDOCODE]
+START
+    INPUT num1, num2
+    SET xor_result = num1 XOR num2
+    SET count = 0
+    WHILE xor_result > 0:
+        IF (xor_result AND 1) EQUALS 1 THEN
+            count = count + 1
+        END IF
+        xor_result = xor_result RIGHT SHIFT 1
+    END WHILE
+    OUTPUT count
+END
+"""
+
+def check_bit_probe(number, position):
+    """Probes a single bit position to see if it is active (1) or inactive (0)"""
+    mask = 1 << position
+    return (number & mask) != 0
+
+
+def count_bit_difference(num1, num2):
+    # Time Complexity: O(Number of bits)
+    # Space Complexity: O(1)
+    # XOR highlights different bits as '1's
+    xor_result = num1 ^ num2
+    difference_count = 0
+    
+    while xor_result > 0:
+        difference_count += xor_result & 1
+        xor_result >>= 1  # Shift right to inspect next bit position
+        
+    return difference_count
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- Binary Subset Builder Active ---\n")
+    
+    # 1. Testing Power Set Generation
+    items = ["A", "B", "C"]
+    print(f"[Power Set Generation]")
+    print(f"  Original List: {items}")
+    
+    generated_subsets = generate_power_set(items)
+    print(f"  Total Subsets Generated (2^3): {len(generated_subsets)}")
+    print("  Subsets:")
+    for subset in generated_subsets:
+        print(f"    {subset}")
+    print()
+    print("-" * 60)
+    
+    # 2. Testing Bit Probe and Difference
+    val_x = 29  # Binary: 11101
+    val_y = 15  # Binary: 01111
+    
+    print("[Bit Comparison and Probing]")
+    print(f"  Value X: {val_x} (Binary: {bin(val_x)[2:]})")
+    print(f"  Value Y: {val_y} (Binary: {bin(val_y)[2:]})")
+    print(f"  Is bit at position 4 set in Value X? {check_bit_probe(val_x, 4)}")
+    print(f"  Total bit difference count: {count_bit_difference(val_x, val_y)}")
+    print("-" * 60)
+
+
+# ==========================================================
+# BITMASK SUBSET GENERATION THEORY REPORT
+# ==========================================================
+"""
+------------------------------------------------------------
+THEORY AND BINARY LOGIC ANALYSIS:
+------------------------------------------------------------
+1. Binary Masks as Selectors:
+   For an array of size n, counting from 0 up to (2^n - 1) in binary systematically 
+   maps out every possible membership configuration. For example, with 3 items, 
+   binary counter value 5 (105 in base-10 is 101 in base-2) states that the first 
+   and third items are included, while the second item is ignored.
+
+2. Bit Probe Mechanics:
+   By shifting 1 left by a specific index value (1 << position), we establish a focused 
+   probe. Intersecting this mask against a value with an AND (&) operator screens 
+   whether that localized bit is turned on or off.
+
+3. Bit Difference Logic (Hamming Distance):
+   The XOR (^) operator compares two integer bit streams and assigns a '1' output 
+   only to indices where the two source values disagree. Iterating through the 
+   XOR footprint via right shifts keeps track of the absolute positional variant count.
+
+------------------------------------------------------------
+COMPLEXITY RATINGS SUMMARY
+------------------------------------------------------------
+- Time Complexity:
+  * Power Set generation: O(n * 2^n) because there are 2^n subsets, and we evaluate n bits for each.
+  * Bit Difference calculation: O(b) where b corresponds to the overall bit width of the integer.
+- Space Complexity: O(n * 2^n) to preserve and collect the complete collection of structural subsets.
+"""
