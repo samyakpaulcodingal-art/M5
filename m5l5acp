@@ -1,0 +1,115 @@
+# ==========================================================
+# ASSIGNMENT: BITWISE SWAP CHALLENGE
+# ==========================================================
+
+# ----------------------------------------------------------
+# BITWISE CHALLENGE FUNCTIONS
+# ----------------------------------------------------------
+"""
+[PSEUDOCODE: XOR SWAP]
+START
+    INPUT a, b
+    SET a = a XOR b
+    SET b = a XOR b
+    SET a = a XOR b
+    OUTPUT a, b
+END
+"""
+
+def xor_swap(a, b):
+    # Time Complexity: O(1)
+    # Space Complexity: O(1) - Swaps completely in-place without a third variable
+    a = a ^ b
+    b = a ^ b
+    a = a ^ b
+    return a, b
+
+
+def double_number(n):
+    # Time Complexity: O(1)
+    # Shifting bits left by 1 position effectively multiplies the number by 2
+    return n << 1
+
+
+def detect_different_signs(x, y):
+    # Time Complexity: O(1)
+    # If signs are different, the sign bit (most significant bit) of their XOR will be 1
+    # resulting in a negative number (< 0)
+    return (x ^ y) < 0
+
+
+def divide_by_two(n):
+    # Time Complexity: O(1)
+    # Shifting bits right by 1 position divides the integer by 2 (floor division)
+    return n >> 1
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- Bitwise Swap Challenge Active ---\n")
+    
+    # 1. Testing In-Place XOR Swap
+    num1, num2 = 15, 42
+    print("[XOR Swap Challenge]")
+    print(f"  Before Swap -> num1 = {num1}, num2 = {num2}")
+    num1, num2 = xor_swap(num1, num2)
+    print(f"  After Swap  -> num1 = {num1}, num2 = {num2}\n")
+    print("-" * 50)
+    
+    # 2. Testing Left Shift Doubling
+    value = 23
+    print("[Bitwise Multiplication]")
+    print(f"  Original Value     : {value}")
+    print(f"  Doubled (value << 1): {double_number(value)}\n")
+    print("-" * 50)
+    
+    # 3. Testing Sign Detection via XOR
+    val1, val2 = 10, -20
+    val3, val4 = -5, -15
+    print("[Sign Detection Challenge]")
+    print(f"  Do {val1} and {val2} have different signs? {detect_different_signs(val1, val2)}")
+    print(f"  Do {val3} and {val4} have different signs? {detect_different_signs(val3, val4)}\n")
+    print("-" * 50)
+    
+    # 4. Testing Right Shift Division
+    target = 100
+    print("[Bitwise Division]")
+    print(f"  Original Value      : {target}")
+    print(f"  Divided by 2 (n >> 1): {divide_by_two(target)}")
+    print("-" * 50)
+
+
+# ==========================================================
+# BITWISE ALGORITHM THEORY REPORT
+# ==========================================================
+"""
+------------------------------------------------------------
+THEORY AND PERFORMANCE ANALYSIS:
+------------------------------------------------------------
+1. XOR Swap Properties:
+   The XOR swap algorithm uses bitwise cancellation logic. 
+   - Step 1 sets 'a' to a combined bitmask (a ^ b).
+   - Step 2 calculates (a ^ b) ^ b, which cancels out 'b' and stores the original value of 'a' into 'b'.
+   - Step 3 calculates (a ^ b) ^ a, which cancels out the newly stored value and moves the original 'b' into 'a'.
+
+2. High-Speed Multiplication and Division:
+   Computers store integer numbers in base-2 (binary). Shifting a binary pattern 
+   to the left opens a trailing zero slot, multiplying the total magnitude by 2. 
+   Conversely, moving the pattern right discards the lowest bit, performing an 
+   instant integer division by 2.
+
+3. Sign Detection Rule:
+   In signed binary integer representations, the leading bit dictates whether a value 
+   is positive (0) or negative (1). XORing numbers with matching signs generates 
+   a 0 at the leading bit position (positive). XORing mismatched signs outputs 
+   a 1 (negative result), allowing for instant branch-free condition scanning.
+
+------------------------------------------------------------
+COMPLEXITY ANALYSIS
+------------------------------------------------------------
+- Time Complexity: O(1) for all methods. These challenges bypass execution pipelines 
+  and process computations directly over hardware registries in constant cycles.
+- Space Complexity: O(1) since all data states are tracked using zero helper arrays.
+"""
