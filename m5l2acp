@@ -1,0 +1,137 @@
+# ==========================================================
+# ASSIGNMENT: MY SMART SWITCH BIT MONITOR
+# ==========================================================
+
+# ----------------------------------------------------------
+# BIT MANIPULATION FUNCTIONS FOR SMART SWITCHES
+# ----------------------------------------------------------
+"""
+[PSEUDOCODE FOR BIT MONITOR]
+START
+    INPUT switch_board (integer), INPUT switch_position (0-7)
+    
+    # 1. Check if a switch is ON or OFF
+    SET mask = 1 SHIFT LEFT switch_position
+    IF (switch_board AND mask) NOT EQUAL 0 THEN
+        PRINT "Switch is ON"
+    ELSE
+        PRINT "Switch is OFF"
+    END IF
+    
+    # 2. Turn a specific switch ON
+    SET switch_board = switch_board OR mask
+    
+    # 3. Turn a specific switch OFF
+    SET switch_board = switch_board AND (NOT mask)
+    
+    # 4. Toggle a switch state
+    SET switch_board = switch_board XOR mask
+END
+"""
+
+def check_switch_status(switch_board, position):
+    """Checks if the switch at the given position is ON (1) or OFF (0)"""
+    mask = 1 << position
+    is_on = (switch_board & mask) != 0
+    status = "ON" if is_on else "OFF"
+    print(f"[Inspect] Switch at position {position} is currently: {status}")
+    return is_on
+
+
+def turn_switch_on(switch_board, position):
+    """Forces a specific switch to turn ON using Bitwise OR (|)"""
+    mask = 1 << position
+    updated_board = switch_board | mask
+    print(f"[Action]  Turning ON switch {position}...")
+    print(f"          Before: {bin(switch_board)[2:].zfill(8)} ({switch_board})")
+    print(f"          After : {bin(updated_board)[2:].zfill(8)} ({updated_board})")
+    return updated_board
+
+
+def turn_switch_off(switch_board, position):
+    """Forces a specific switch to turn OFF using Bitwise AND (&) with inverted mask"""
+    mask = 1 << position
+    updated_board = switch_board & ~mask
+    print(f"[Action]  Turning OFF switch {position}...")
+    print(f"          Before: {bin(switch_board)[2:].zfill(8)} ({switch_board})")
+    print(f"          After : {bin(updated_board)[2:].zfill(8)} ({updated_board})")
+    return updated_board
+
+
+def toggle_switch(switch_board, position):
+    """Flips the switch state (ON->OFF or OFF->ON) using Bitwise XOR (^)"""
+    mask = 1 << position
+    updated_board = switch_board ^ mask
+    print(f"[Action]  Toggling switch {position}...")
+    print(f"          Before: {bin(switch_board)[2:].zfill(8)} ({switch_board})")
+    print(f"          After : {bin(updated_board)[2:].zfill(8)} ({updated_board})")
+    return updated_board
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- My Smart Switch Bit Monitor Dashboard ---\n")
+    
+    # Initial state: 00101010 (Decimal 42)
+    # Switches at positions 1, 3, and 5 are ON. Positions 0, 2, 4, 6, 7 are OFF.
+    smart_switches = 42 
+    print(f"Initial Switchboard State: {bin(smart_switches)[2:].zfill(8)} (Decimal: {smart_switches})\n")
+    print("-" * 60)
+    
+    # 1. Inspecting switch statuses
+    check_switch_status(smart_switches, position=3)
+    check_switch_status(smart_switches, position=4)
+    print("-" * 60)
+    
+    # 2. Turning a switch ON (Turn on switch index 4)
+    smart_switches = turn_switch_on(smart_switches, position=4)
+    print("-" * 60)
+    
+    # 3. Turning a switch OFF (Turn off switch index 3)
+    smart_switches = turn_switch_off(smart_switches, position=3)
+    print("-" * 60)
+    
+    # 4. Toggling a switch (Flip switch index 0 from OFF to ON)
+    smart_switches = toggle_switch(smart_switches, position=0)
+    print("-" * 60)
+    
+    print(f"\nFinal Switchboard Configuration: {bin(smart_switches)[2:].zfill(8)} (Decimal: {smart_switches})")
+
+
+# ==========================================================
+# BIT MASKS & MONITOR THEORY REPORT
+# ==========================================================
+"""
+------------------------------------------------------------
+SMART HOME HOME AUTOMATION THEORY:
+------------------------------------------------------------
+1. Bitmask Concept: 
+   A bitmask isolates specific bits we want to target. By shifting the number 
+   1 left by 'position' places (1 << position), we create a dynamic binary 
+   sequence containing a single '1' at our targeted switch index.
+
+2. Bitwise Inspection (AND):
+   By using 'switch_board & mask', if the bit at that position is 1, the total 
+   evaluation yields a non-zero number, letting us know the appliance is active.
+
+3. Bitwise Modification (OR & AND NOT):
+   - Using OR (|) guarantees a bit becomes 1 without altering any other switch.
+   - Using AND with a bitwise inverted mask (~mask) creates a structure where 
+     the target position becomes 0 and all other positions are 1s, cleanly clearing 
+     out our target switch to 0.
+
+4. Bitwise Toggle (XOR):
+   - XOR (^) with a 1 changes a 0 to 1, or a 1 to 0. This functions perfectly 
+     as an ON/OFF state flipper.
+
+------------------------------------------------------------
+COMPLEXITY ANALYSIS
+------------------------------------------------------------
+- Time Complexity: O(1) for all monitoring and changing operations. 
+  The operations are direct bit shifts and boolean logic running inside the 
+  hardware processor registers instantaneously.
+- Space Complexity: O(1). State configurations are tracked inside a standard 
+  primitive integer variable with zero auxiliary storage structures.
+"""
