@@ -1,0 +1,103 @@
+# ==========================================================
+# ASSIGNMENT: POWER OF TWO SCANNER
+# ==========================================================
+
+# ----------------------------------------------------------
+# SCANNER FUNCTIONS (Bitwise Logic)
+# ----------------------------------------------------------
+"""
+[PSEUDOCODE: CHECK POWER OF TWO]
+START
+    INPUT n
+    IF n > 0 AND (n AND (n - 1)) EQUALS 0 THEN
+        RETURN True
+    ELSE
+        RETURN False
+    END IF
+END
+"""
+
+def is_power_of_two(n):
+    # Time Complexity: O(1) - Constant time bitwise check
+    # Space Complexity: O(1)
+    return n > 0 and (n & (n - 1)) == 0
+
+
+def is_power_of_four(n):
+    # Time Complexity: O(1)
+    # A number is a power of 4 if it is a power of 2 
+    # and its only set bit is at an odd position (mask 0x55555555)
+    return is_power_of_two(n) and (n & 0x55555555) != 0
+
+
+def is_power_of_eight(n):
+    # Time Complexity: O(1)
+    # A number is a power of 8 if it is a power of 2 
+    # and its only set bit is at positions 0, 3, 6, 9... (mask 0x24924924)
+    return is_power_of_two(n) and (n & 0x24924924) != 0
+
+
+def remove_rightmost_set_bit(n):
+    # Time Complexity: O(1)
+    # Using the property n & (n - 1) clears the lowest set bit
+    return n & (n - 1)
+
+
+# ----------------------------------------------------------
+# FAST BINARY EXPONENTIATION
+# ----------------------------------------------------------
+"""
+[PSEUDOCODE: BINARY EXPONENTIATION]
+START
+    INPUT base, exponent
+    SET result = 1
+    WHILE exponent > 0:
+        IF (exponent AND 1) EQUALS 1 THEN
+            result = result * base
+        END IF
+        base = base * base
+        exponent = exponent RIGHT SHIFT 1
+    END WHILE
+    RETURN result
+END
+"""
+
+def power_fast(base, exponent):
+    # Time Complexity: O(log(exponent)) - Drastically faster than standard O(n) loops
+    # Space Complexity: O(1)
+    result = 1
+    while exponent > 0:
+        # If the lowest bit of exponent is 1, multiply base to result
+        if exponent & 1:
+            result *= base
+        
+        base *= base          # Square the base
+        exponent >>= 1        # Bitwise Right Shift by 1 (equivalent to exponent // 2)
+    return result
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- Power of Two Scanner Active ---\n")
+    
+    # 1. Test Power Scanner Operations
+    test_numbers = [8, 16, 64, 40]
+    for num in test_numbers:
+        print(f"Scanning Number: {num}")
+        print(f"  > Is Power of 2? {is_power_of_two(num)}")
+        print(f"  > Is Power of 4? {is_power_of_four(num)}")
+        print(f"  > Is Power of 8? {is_power_of_eight(num)}")
+        print(f"  > Clearing rightmost bit leaves: {remove_rightmost_set_bit(num)}\n")
+    
+    print("-" * 60)
+    
+    # 2. Test Binary Exponentiation
+    b, e = 3, 10
+    print(f"Calculating {b}^{e} using Fast Binary Exponentiation...")
+    print(f"Result: {power_fast(b, e)}")
+    print("-" * 60)
+
+
+# ==========================================================
