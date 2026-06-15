@@ -1,0 +1,138 @@
+# ==========================================================
+# ASSIGNMENT: BINARY CLUE INVESTIGATOR
+# ==========================================================
+
+# ----------------------------------------------------------
+# METHOD 1: FIND ONE ODD OCCURRING NUMBER (XOR Cancellation)
+# ----------------------------------------------------------
+"""
+[METHOD 1: PSEUDOCODE]
+START
+    INPUT numbers_list
+    SET unique_clue = 0
+    FOR each num in numbers_list:
+        SET unique_clue = unique_clue XOR num
+    END FOR
+    OUTPUT unique_clue
+END
+"""
+
+def find_single_clue(numbers_list):
+    # Time Complexity: O(n) - Single pass through the array
+    # Space Complexity: O(1) - Constant auxiliary space
+    unique_clue = 0
+    
+    for num in numbers_list:
+        unique_clue ^= num  # XOR operation
+        
+    return unique_clue
+
+
+# ----------------------------------------------------------
+# METHOD 2: FIND TWO ODD OCCURRING NUMBERS (Rightmost Set Bit)
+# ----------------------------------------------------------
+"""
+[METHOD 2: PSEUDOCODE]
+START
+    INPUT numbers_list
+    SET xor_sum = 0
+    FOR each num in numbers_list:
+        xor_sum = xor_sum XOR num
+    END FOR
+    
+    # Isolate the rightmost set bit
+    SET rightmost_set_bit = xor_sum AND (NOT (xor_sum - 1))
+    
+    SET clue1 = 0
+    SET clue2 = 0
+    
+    # Divide elements into two buckets based on the set bit
+    FOR each num in numbers_list:
+        IF (num AND rightmost_set_bit) NOT EQUAL 0 THEN
+            clue1 = clue1 XOR num
+        ELSE
+            clue2 = clue2 XOR num
+        END IF
+    END FOR
+    
+    OUTPUT clue1, clue2
+END
+"""
+
+def find_two_clues(numbers_list):
+    # Time Complexity: O(n) - Two independent single passes
+    # Space Complexity: O(1)
+    
+    # Step 1: XOR all elements to get XOR sum of the two unique numbers
+    xor_sum = 0
+    for num in numbers_list:
+        xor_sum ^= num
+        
+    # Step 2: Extract the rightmost set bit (first bit where they differ)
+    rightmost_set_bit = xor_sum & ~(xor_sum - 1)
+    
+    clue1 = 0
+    clue2 = 0
+    
+    # Step 3: Divide numbers into two groups and XOR separately
+    for num in numbers_list:
+        if num & rightmost_set_bit:
+            clue1 ^= num  # Group with the bit set
+        else:
+            clue2 ^= num  # Group with the bit not set
+            
+    return sorted([clue1, clue2])
+
+
+# ==========================================================
+# EXECUTION / TESTING THE CODE
+# ==========================================================
+if __name__ == "__main__":
+    print("--- Binary Clue Investigator Active ---\n")
+    
+    # Scenario A: One number appears an odd number of times (all others appear twice)
+    case_a_list = [4, 7, 9, 4, 9, 5, 5] 
+    # Explanation: 4, 5, 9 cancel out. 7 is the single clue.
+    print(f"Case A List (One Odd Number)  : {case_a_list}")
+    print(f"Investigated Single Clue      : {find_single_clue(case_a_list)}\n")
+    print("-" * 60)
+    
+    # Scenario B: Two numbers appear an odd number of times (all others appear twice)
+    case_b_list = [2, 3, 7, 9, 11, 2, 3, 11]
+    # Explanation: 2, 3, 11 cancel out. 7 and 9 are the two clues.
+    print(f"Case B List (Two Odd Numbers) : {case_b_list}")
+    print(f"Investigated Two Clues        : {find_two_clues(case_b_list)}")
+    print("-" * 60)
+
+
+# ==========================================================
+# BITWISE XOR IDENTITY & INVESTIGATION REPORT
+# ==========================================================
+"""
+------------------------------------------------------------
+XOR MATHEMATICAL IDENTITIES USED:
+------------------------------------------------------------
+1. Identity Rule (a ^ 0 = a):
+   XORing any number with 0 preserves the number itself. This acts as the base 
+   clearing element for our search trackers.
+
+2. Self-Cancellation Rule (a ^ a = 0):
+   XORing a number with itself evaluates to 0. Therefore, every number that 
+   appears an EVEN number of times completely cancels out to 0, leaving behind 
+   only the numbers that appear an ODD number of times.
+
+3. Rightmost Set Bit Concept (For finding two unique values):
+   When two distinct numbers are left over in the XOR total sum, the resulting value 
+   represents (clue1 ^ clue2). By calculating 'xor_sum & ~(xor_sum - 1)', we isolate 
+   the exact rightmost bit position where clue1 and clue2 differ (one has a 1 and 
+   the other has a 0). This serves as a filter to divide the main list and crack 
+   both hidden numbers seamlessly.
+
+------------------------------------------------------------
+COMPLEXITY ANALYSIS
+------------------------------------------------------------
+- Time Complexity: O(n). The algorithms loop through the array once or twice 
+  linearly, regardless of the values inside.
+- Space Complexity: O(1). Calculations happen directly through bit accumulation variables, 
+  avoiding memory overhead from hash maps or dictionary trackers.
+"""
